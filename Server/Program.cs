@@ -1,6 +1,4 @@
 ﻿using Cmd.Terminal;
-using LiteNetLib;
-using LiteNetLib.Utils;
 using Server.Debugger;
 
 namespace Server; 
@@ -8,6 +6,7 @@ namespace Server;
 public class Program
 {
     private static Server server;
+    private const int millisecondsTimeout = 100;
 
     public static void Main(string[] args)
     {
@@ -15,13 +14,18 @@ public class Program
         server = new Server();
         server.Start();
         
-        // Terminal.RunCommand("debug -se");
-        // Terminal.Listen();
-        
+        new Thread(GameLoop).Start(); 
+        Terminal.RunCommand("debug -se");
+        Terminal.Listen();
+
+    }
+
+    private static void GameLoop()
+    {
         while (true)
         {
             server.Update();
-            Thread.Sleep(15);
+            Thread.Sleep(millisecondsTimeout);
         }
     }
 }

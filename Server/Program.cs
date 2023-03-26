@@ -1,31 +1,31 @@
 ﻿using Cmd.Terminal;
 using Server.Debugger;
 
-namespace Server; 
-
-public class Program
+namespace Server
 {
-    private static Server server;
-    private const int millisecondsTimeout = 100;
-
-    public static void Main(string[] args)
+    public class Program
     {
-        Debug.Init();
-        server = new Server();
-        server.Start();
-        
-        new Thread(GameLoop).Start(); 
-        Terminal.RunCommand("debug -se");
-        Terminal.Listen();
+        private static Server server;
+        private const int millisecondsTimeout = 100;
 
-    }
-
-    private static void GameLoop()
-    {
-        while (true)
+        public static void Main(string[] args)
         {
-            server.Update();
-            Thread.Sleep(millisecondsTimeout);
+            RecastDebug.Init();
+            server = new Server();
+            server.Start();
+        
+            new Thread(GameLoop).Start(); 
+            Terminal.RunCommand("debug -se");
+            Terminal.Listen();
+        }
+
+        private static void GameLoop()
+        {
+            while (true)
+            {
+                server.Update();
+                Thread.Sleep(millisecondsTimeout);
+            }
         }
     }
 }

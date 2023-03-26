@@ -5,7 +5,7 @@ using NLog.Config;
 
 namespace Server.Debugger
 {
-    public static class Debug
+    public static class RecastDebug
     {
         private static NLog.Logger logger = LogManager.GetCurrentClassLogger();
         private static Telemetry Telemetry { get; } = new Telemetry();

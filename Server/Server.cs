@@ -1,48 +1,31 @@
-using LiteNetLib;
 using LiteNetLib.Utils;
-using Server.Debugger;
+using Shared;
 
-namespace Server;
-
-public class Server
+namespace Server
 {
-    private NetManager netManager;
-    private EventBasedNetListener listener;
-
-    public void Start()
+    public class Server
     {
-        listener = new EventBasedNetListener();
-        netManager = new NetManager(listener);
-        var result = netManager.Start(4242);
-        Debug.Log("Server started");
-        
-        listener.ConnectionRequestEvent += ListenerOnConnectionRequestEvent;
-        listener.PeerConnectedEvent += ListenerOnPeerConnectedEvent;
+        private ConnectionsHolder connectionsHolder;
+        private NetworkManager networkManager;
+        private ClientsController clientsController;
+        private NetPacketProcessor netPacketProcessor;
 
-    }
-
-    public void Update()
-    {
-        netManager.PollEvents();
-    }
-
-    private void ListenerOnConnectionRequestEvent(ConnectionRequest request)
-    {
-        Debug.Log($"Connection request from {request.RemoteEndPoint.Address} : {request.RemoteEndPoint.Port}");
-        var netPeer = request.Accept();
-        if (netPeer != null)
+        public void Start()
         {
-            Debug.Log("Connection request accepted");
+            connectionsHolder = new ConnectionsHolder();
+            netPacketProcessor = new NetPacketProcessor();
+            networkManager = new NetworkManager(connectionsHolder, netPacketProcessor);
+            networkManager.Start();
+            
+            clientsController = new ClientsController(connectionsHolder, netPacketProcessor);
+            
+            netPacketProcessor.RegisterNestedType<Vector2Serialize>();
+            netPacketProcessor.RegisterNestedType<Vector3Serialize>();
         }
-        else
-            Debug.Log("Connection request rejected");
-    }
 
-    private void ListenerOnPeerConnectedEvent(NetPeer peer)
-    {
-        Debug.Log($"We got connection {peer.EndPoint}");
-        NetDataWriter writer = new NetDataWriter();
-        writer.Put("Hello client");
-        peer.Send(writer, DeliveryMethod.ReliableOrdered);
+        public void Update()
+        {
+            networkManager.Update();
+        }
     }
 }

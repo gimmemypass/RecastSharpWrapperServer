@@ -5,6 +5,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,6 +13,10 @@
       <PackageReference Include="LiteNetLib" Version="0.9.5.2" />
       <PackageReference Include="NLog" Version="5.1.2" />
       <PackageReference Include="NLog.Config" Version="4.7.15" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\RecastSharpWrapper\RecastSharpWrapper.csproj" />
     </ItemGroup>
 
 </Project>
